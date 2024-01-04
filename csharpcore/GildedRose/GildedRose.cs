@@ -114,47 +114,12 @@ namespace GildedRoseKata
             item.Quality = Math.Min(max_quality, item.Quality + amount);
         }
 
-        private static void UpdateQualitySingle(Item item)
+        private void UpdateQualitySingle(Item item)
         {
-            if (item.Name == SULFURAS)
-            {
-                return;
-            } else {
-                item.SellIn--;
-            }
-
-            if (item.Name == AGED_BRIE)
-            {
-                IncreaseItemQuality(item);
-                if (item.SellIn < 0)
-                {
-                    IncreaseItemQuality(item);
-                }
-            } 
-            else if (item.Name == BACKSTAGE_PASSES)
-            {
-                IncreaseItemQuality(item);
-                if (item.SellIn < 10)
-                {
-                    IncreaseItemQuality(item);
-                }
-                if (item.SellIn < 5)
-                {
-                    IncreaseItemQuality(item);
-                }
-                if (item.SellIn < 0)
-                {
-                    item.Quality = 0;
-                }
-            } else if (item.Name == SULFURAS) {
-                return;
-            } else {
-                DecreaseItemQuality(item);
-                if (item.SellIn < 0)
-                {   
-                    DecreaseItemQuality(item);
-                }
-            }
+            var itemUpdater = _itemUpdaters.ContainsKey(item.Name) ? _itemUpdaters[item.Name] : _itemUpdaters["default"];
+            
+            itemUpdater.UpdateSellIn(item);
+            itemUpdater.UpdateQuality(item);
         }
 
         public void UpdateQuality()
